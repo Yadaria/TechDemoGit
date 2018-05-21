@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
     public Transform target;
     public float zPosition = 0;
+    public float xOffset = 0;
+    public float yOffset = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -13,6 +15,6 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.localPosition = new Vector3(target.localPosition.x, target.localPosition.z, zPosition);
+        transform.localPosition = new Vector3(target.localPosition.x + xOffset, target.localPosition.z + yOffset, zPosition);
 	}
 }
