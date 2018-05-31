@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ItemConnection : MonoBehaviour{
 
-    Item myItem;
+    public Item myItem;
     
     public void RegisterItem(Item item)
     {

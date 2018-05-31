@@ -14,102 +14,111 @@ public class Inventory : MonoBehaviour
 
     public GameObject itemPrefab;
     public Transform itemsPanelTransform;
-    
-    private List<GameObject> itemList;
 
+    private List<GameObject> itemList;
+    private List<GameObject> displayedItems;
+    
+    int maxPages = 1;
+    int displayedPage = 1;
 
     static int startX = 5;
     static int startY = -5;
 
     static int itemWidth = 90;
     static int itemHeight = 50;
-
-    static int rows = 2;
-    static int collumns = 4;
-
-    
-    private class ItemPlus
-    {
-        GameObject item;
-
-        int xPos;
-        int yPos;
-
-        public ItemPlus(GameObject item, int x, int y)
-        {
-            this.item = item;
-            xPos = x;
-            yPos = y;
-        }
-    }
+        
 
     // Use this for initialization
     void Start()
     {
         itemList = new List<GameObject>();
-        
+        displayedItems = new List<GameObject>();
+
         /* Test Section */
 
         AddItem(testItem);
         AddItem(testItem);
         AddItem(testItem);
         AddItem(testItem);
+        AddItem(testItem);
+        AddItem(testItem);
+        AddItem(testItem);
+        AddItem(testItem);
 
         /* End Test Section */
+        ArangeItems();
+
     }
+    
 
-    //TODO: Positionierung & Skalierung der Elemente 
-    private void OnGUI()
-    {        
-        int itemsPerSite = rows * collumns;
-        for(int n = 0; n < itemsPerSite-1 && n < itemList.Count; n++)
-        {
-            if(itemList[n] != null)
-            {
-                GameObject item = itemList[n];
-
-                RectTransform rectTransform = item.GetComponent<RectTransform>();
-
-                if (n > collumns)
-                {
-
-                }
-                
-                rectTransform.position = new Vector3(startX + n * itemWidth, startY - n * itemHeight, 0);
-            }            
-        }
-
-        /*
-        int i = 0;
-        foreach (GameObject item in itemList)
-        {
-            if (i > itemsPerSite - 1)  // Check ob Seite voll, Todo: Seite umblättern & filtern welche items angezeigt werden
-            {
-                RectTransform rectTransform = item.GetComponent<RectTransform>();
-
-                rectTransform.position = new Vector3(startX + i * itemWidth, startY - i * itemHeight, 0);
-            }
-            i++;
-        }
-        */
-    }
-
-    /*
-    public void AddItem(GameObject itemToAdd)
+    
+    private void ArangeItems()
     {
-        itemList.Add(itemToAdd);
-    }
-    */
+        int coloumn = 0;
 
+        for (int i = 0; i < itemList.Count; i++)
+        {            
+            RectTransform rectTransform = itemList[i].GetComponent<RectTransform>();
+
+            Vector3 position = new Vector3(0,0,0);
+
+            if (i < 4)  // first Row
+            {
+                int deltaX = coloumn * itemWidth;
+                position.x += startX + deltaX;
+                position = new Vector3(startX + deltaX, startY, 0);
+
+
+            }
+            else // second Row
+            {
+                int deltaX = coloumn * itemWidth;
+                position = new Vector3(startX + deltaX, startY - itemHeight, 0);
+               
+            }
+
+            coloumn++;
+            if (coloumn == 4)
+            {
+                coloumn = 0;
+            }
+
+            Debug.Log(position);
+            rectTransform.localPosition = position;
+
+        }
+    }
+    
 
     public void AddItem(Item itemToAdd)
     {
         GameObject itemGO = Instantiate(itemPrefab);
+        
 
-        itemGO.transform.SetParent(itemsPanelTransform);
+        itemGO.transform.SetParent(itemsPanelTransform, false);
 
         itemGO.GetComponent<ItemConnection>().RegisterItem(itemToAdd);
 
         itemList.Add(itemGO);
+    }
+
+    public void NextPage()
+    {
+        if (displayedPage == maxPages)
+        {
+            return;
+        }
+        //TODO
+
+    }
+
+    public void LastPage()
+    {
+        if(displayedPage == 1)
+        {
+            return;
+        }
+        //TODO
+
     }
 }
