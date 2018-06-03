@@ -9,9 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc3b345256568b64b9e293295fe458c1, type: 3}
-  m_Name: Schwert
+  m_Name: Hausaufgaben
   m_EditorClassIdentifier: 
-  itemName: Schwert
-  lookAtText: "Ein Schwert. Nicht mehr und nicht weniger.\nNormalerweise w\xFCrde
-    man hier wahrscheinlich Hinweise finden wof\xFCr dieses Item n\xFCtzlich sein
-    k\xF6nnte.\nAber was weis ich schon..."
+  itemName: Hausaufgaben
+  lookAtText: "Deine Mathehausaufgaben. Verliere sie besser nicht. Frau Lange wird
+    b\xF6se sein wenn du schon wieder deine Hausaufgaben nicht hast!"

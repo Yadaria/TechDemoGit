@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
@@ -11,95 +13,118 @@ public class Inventory : MonoBehaviour
 
     /* End Test Section */
 
+    private List<Item> itemList;
+    private List<Item> displayedItems;
 
-    public GameObject itemPrefab;
-    public Transform itemsPanelTransform;
-
-    private List<GameObject> itemList;
-    private List<GameObject> displayedItems;
-    
     int maxPages = 1;
     int displayedPage = 1;
 
-    static int startX = 5;
-    static int startY = -5;
+    [Space]
+    [Header("Don't touch those!")]
+    public GameObject slot0;
+    public GameObject slot1;
+    public GameObject slot2;
+    public GameObject slot3;
+    public GameObject slot4;
+    public GameObject slot5;
+    public GameObject slot6;
+    public GameObject slot7;
 
-    static int itemWidth = 90;
-    static int itemHeight = 50;
-        
 
-    // Use this for initialization
+    private List<GameObject> slots; // a list holding every slot
+
+    
     void Start()
     {
-        itemList = new List<GameObject>();
-        displayedItems = new List<GameObject>();
+        itemList = new List<Item>();
+        displayedItems = new List<Item>();
 
-        /* Test Section */
-
-        AddItem(testItem);
-        AddItem(testItem);
-        AddItem(testItem);
-        AddItem(testItem);
-        AddItem(testItem);
-        AddItem(testItem);
-        AddItem(testItem);
-        AddItem(testItem);
-
-        /* End Test Section */
-        ArangeItems();
-
+        slots = new List<GameObject>
+        {
+            slot0,
+            slot1,
+            slot2,
+            slot3,
+            slot4,
+            slot5,
+            slot6,
+            slot7
+        };
     }
-    
 
-    
-    private void ArangeItems()
+    private void Update()
     {
-        int coloumn = 0;
-
-        for (int i = 0; i < itemList.Count; i++)
-        {            
-            RectTransform rectTransform = itemList[i].GetComponent<RectTransform>();
-
-            Vector3 position = new Vector3(0,0,0);
-
-            if (i < 4)  // first Row
-            {
-                int deltaX = coloumn * itemWidth;
-                position.x += startX + deltaX;
-                position = new Vector3(startX + deltaX, startY, 0);
+        /* Test Section */
+        if ( Input.GetKeyDown(KeyCode.A))
+        {
+            AddItem(testItem);
+        }
+        /* End Test Section */
+    }
 
 
-            }
-            else // second Row
-            {
-                int deltaX = coloumn * itemWidth;
-                position = new Vector3(startX + deltaX, startY - itemHeight, 0);
-               
-            }
+    private void UpdateSlots()
+    {
+        
+        // Remove all Items from slots and deactivate all slots first
+        foreach(GameObject slot in slots)
+        {
+            slot.GetComponent<ItemConnection>().RemoveItem();
+            slot.SetActive(false);
+        }
 
-            coloumn++;
-            if (coloumn == 4)
-            {
-                coloumn = 0;
-            }
+        // Activate needed slots and register the items to be displayed
+        for (int i = 0; i < displayedItems.Count; i++)            
+        {
+            ItemConnection itemConnection = slots[i].GetComponent<ItemConnection>();
 
-            Debug.Log(position);
-            rectTransform.localPosition = position;
+            itemConnection.RegisterItem(displayedItems[i]);
+            slots[i].transform.GetChild(0).GetComponent<Text>().text = itemConnection.GetName();
 
+            slots[i].SetActive(true);
+            
         }
     }
-    
+
+    private void UpdateDisplayedItems()
+    {
+        displayedItems.Clear();
+
+        int delta = (displayedPage - 1) * 8;
+
+        
+        for(int i = 0; i < itemList.Count && i < 8; i++)
+        {
+            if (i+delta < itemList.Count)
+            {
+                displayedItems.Add(itemList[i + delta]);
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+
 
     public void AddItem(Item itemToAdd)
     {
-        GameObject itemGO = Instantiate(itemPrefab);
-        
+        itemList.Add(itemToAdd);
 
-        itemGO.transform.SetParent(itemsPanelTransform, false);
+        maxPages = (int)Math.Ceiling((double)itemList.Count / 8.0);
 
-        itemGO.GetComponent<ItemConnection>().RegisterItem(itemToAdd);
+        UpdateDisplayedItems();
+        UpdateSlots();
+    }
 
-        itemList.Add(itemGO);
+    public void RemoveItem(Item itemToRemove)
+    {
+        itemList.Remove(itemToRemove);
+
+        maxPages = (int)Math.Ceiling((double)itemList.Count / 8.0);
+
+        UpdateDisplayedItems();
+        UpdateSlots();
     }
 
     public void NextPage()
@@ -108,17 +133,23 @@ public class Inventory : MonoBehaviour
         {
             return;
         }
-        //TODO
 
+        displayedPage++;
+
+        UpdateDisplayedItems();
+        UpdateSlots();
     }
 
     public void LastPage()
     {
-        if(displayedPage == 1)
+        if (displayedPage == 1)
         {
             return;
         }
-        //TODO
+        
+        displayedPage--;
 
+        UpdateDisplayedItems();
+        UpdateSlots();
     }
 }

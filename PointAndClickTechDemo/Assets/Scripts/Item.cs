@@ -5,15 +5,17 @@ public class Item: ScriptableObject
 {
     //public Sprite image;
 
-    public string itemName;
+    public string itemName;       
 
-    public string itemText;
-
-    public string picture;
+    [TextArea]
+    public string lookAtText;
 
     // Use this for initialization
     void Start()
     {
 
-    }    
+    }  
+    
+
+
 }
