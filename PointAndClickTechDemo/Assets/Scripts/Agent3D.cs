@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class Agent3D : MonoBehaviour
 {
@@ -44,6 +45,11 @@ public class Agent3D : MonoBehaviour
                     hit.collider.gameObject.GetComponent<PickUp>().TakeItem();
 
                     actionsController.ResetInteraction();
+                }
+
+                if(actionsController.CurrentInteraction == UIActionsController.Interaction.talkTo && hit.collider.tag == "Dialogue")
+                {
+                    SceneManager.LoadScene(1);
                 }
             }
         }

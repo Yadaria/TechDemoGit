@@ -8,3 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Main.unity
     guid: 31c23bf206c5de443bd9a960e18d4e63
+  - enabled: 1
+    path: Assets/Dialogue.unity
+    guid: 31e6789f470f96b4aa69f29c8c62b7bc
