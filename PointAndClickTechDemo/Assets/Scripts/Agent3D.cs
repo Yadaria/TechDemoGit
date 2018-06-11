@@ -9,7 +9,7 @@ public class Agent3D : MonoBehaviour
 {
 
     NavMeshAgent agent;
-    
+
     public UIActionsController actionsController;   // Wird gebraucht, um die aktuelle action abzufragen
 
     // Use this for initialization
@@ -47,9 +47,29 @@ public class Agent3D : MonoBehaviour
                     actionsController.ResetInteraction();
                 }
 
-                if(actionsController.CurrentInteraction == UIActionsController.Interaction.talkTo && hit.collider.tag == "Dialogue")
+                if (actionsController.CurrentInteraction == UIActionsController.Interaction.talkTo && hit.collider.tag == "Dialogue")
                 {
-                    SceneManager.LoadScene(1);
+                    SceneManager.LoadScene("Dialogue");
+                }
+
+                if (actionsController.CurrentInteraction == UIActionsController.Interaction.goTo && hit.collider.tag == "Exit")
+                {
+                    if (hit.collider.GetComponent<ExitScene>() == null)
+                    {
+                        Debug.Log("ExitScene Component is missing.");
+                        return;
+                    }
+                    hit.collider.GetComponent<ExitScene>().LoadNextScene();
+                }
+
+                if (actionsController.CurrentInteraction == UIActionsController.Interaction.lookAt && hit.collider.tag == "Observable")
+                {
+                    hit.collider.GetComponent<LookAt>().LookAtObject();
+                }
+
+                if (actionsController.CurrentInteraction == UIActionsController.Interaction.lookAt && hit.collider.tag == "Cupboard")
+                {
+                    SceneManager.LoadScene("Tafel");
                 }
             }
         }

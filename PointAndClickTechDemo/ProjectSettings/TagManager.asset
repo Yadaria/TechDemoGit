@@ -7,6 +7,9 @@ TagManager:
   - Ground
   - PickUp
   - Dialogue
+  - Exit
+  - Observable
+  - Cupboard
   layers:
   - Default
   - TransparentFX

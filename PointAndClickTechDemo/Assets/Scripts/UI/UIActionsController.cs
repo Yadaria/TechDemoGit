@@ -4,7 +4,7 @@ using UnityEngine.Events;
 public class UIActionsController : MonoBehaviour
 {
 
-    public enum Interaction { none, give, pickUp, push, open, lookAt, pull, close, talkTo, use };
+    public enum Interaction { none, give, pickUp, push, open, lookAt, goTo, close, talkTo, use };
 
     private Interaction currentInteraction = Interaction.none;
     public Interaction CurrentInteraction
@@ -19,12 +19,12 @@ public class UIActionsController : MonoBehaviour
 
 
     public void Start()
-    {        
+    {
     }
 
     public void ResetInteraction()
     {
-        currentInteraction = Interaction.none;        
+        currentInteraction = Interaction.none;
     }
 
 
@@ -36,12 +36,12 @@ public class UIActionsController : MonoBehaviour
     public UnityAction lookAtAction;
     public UnityAction talkToAction;
     public UnityAction pushAction;
-    public UnityAction pullAction;
+    public UnityAction goToAction;
     public UnityAction useAction;
-    
+
 
     public void OnClick(int interaction)
-    {        
+    {
         Debug.Log((Interaction)interaction);
 
         switch ((Interaction)interaction)
@@ -71,10 +71,10 @@ public class UIActionsController : MonoBehaviour
                 if (lookAtAction != null)
                     lookAtAction();
                 break;
-            case Interaction.pull:
-                currentInteraction = Interaction.pull;
-                if (pullAction != null)
-                    pullAction();
+            case Interaction.goTo:
+                currentInteraction = Interaction.goTo;
+                if (goToAction != null)
+                    goToAction();
                 break;
             case Interaction.close:
                 currentInteraction = Interaction.close;

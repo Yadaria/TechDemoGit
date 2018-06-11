@@ -83,43 +83,45 @@ public class DialogueManager : MonoBehaviour
         {
             Debug.Log("Dialogue ended.");
             //go back to main scene
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene("Klassenraum");
         }
 
     }
 
     void DisplayChoices()
     {
-        Debug.Log("fD.lenght " + dialogue.dialogueChoices.Length);
+        //Debug.Log("fD.lenght " + dialogue.answers.Length);
         continueButton.SetActive(false);
-        switch (dialogue.dialogueChoices.Length)
+
+        switch (dialogue.answers.Length)
         {
             case 0:
                 break;
             case 1:
                 choice1Button.SetActive(true);
-                choice1Button.GetComponentInChildren<Text>().text = dialogue.answers[0];
+                choice1Button.GetComponentInChildren<Text>().text = dialogue.answers[0].answerText;
                 break;
             case 2:
                 choice1Button.SetActive(true);
                 choice2Button.SetActive(true);
-                choice1Button.GetComponentInChildren<Text>().text = dialogue.answers[0];
-                choice2Button.GetComponentInChildren<Text>().text = dialogue.answers[1];
+                choice1Button.GetComponentInChildren<Text>().text = dialogue.answers[0].answerText;
+                choice2Button.GetComponentInChildren<Text>().text = dialogue.answers[1].answerText;
                 break;
             case 3:
                 choice1Button.SetActive(true);
                 choice2Button.SetActive(true);
                 choice3Button.SetActive(true);
-                choice1Button.GetComponentInChildren<Text>().text = dialogue.answers[0];
-                choice2Button.GetComponentInChildren<Text>().text = dialogue.answers[1];
-                choice3Button.GetComponentInChildren<Text>().text = dialogue.answers[2];
+                choice1Button.GetComponentInChildren<Text>().text = dialogue.answers[0].answerText;
+                choice2Button.GetComponentInChildren<Text>().text = dialogue.answers[1].answerText;
+                choice3Button.GetComponentInChildren<Text>().text = dialogue.answers[2].answerText;
                 break;
         }
+
     }
 
     public void StartNextDialogue(int index)
     {
-        StartDialogue(dialogue.dialogueChoices[index]);
+        StartDialogue(dialogue.answers[index].nextDialogue);
     }
 
     private void Update()
@@ -139,7 +141,15 @@ public class Dialogue
     public string[] sentences;
     public bool endDialogue;
 
-    [Header("Set only if 'endDialogue' is false")]
-    public Dialogue[] dialogueChoices;
-    public string[] answers;
+    [Header("Set only if 'End Dialogue' is false")]
+    //public Dialogue[] dialogueChoices;
+    //public string[] answers;
+    public NextDialogue[] answers;
+}
+
+[System.Serializable]
+public struct NextDialogue
+{
+    public string answerText;
+    public Dialogue nextDialogue;
 }
