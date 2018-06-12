@@ -2179,10 +2179,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1812045168}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2892ca35f93e434d82b72ccd08c006f, type: 3}
+  m_Script: {fileID: 11500000, guid: f2312b47fdf9c3c4289ed6d3fa08cd56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   actionsController: {fileID: 554877984}
+  interactionRadius: 1
 --- !u!195 &1812045171
 NavMeshAgent:
   m_ObjectHideFlags: 0

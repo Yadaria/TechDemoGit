@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -14,16 +13,18 @@ public class Agent3D : MonoBehaviour
     public UIActionsController actionsController;   // Wird gebraucht, um die aktuelle action abzufragen
 
     public float interactionRadius = 1.0f;
-    private bool isOnItsWay = false;
 
-    
 
     // Use this for initialization
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
     }
-    
+
+    /// <summary>
+    /// Die Action bei der die Methoden angemeldet werden, die je nach Click-Ziel Ausgeführt werden sollen.
+    /// </summary>
+  
 
     // Update is called once per frame
     void Update()
@@ -41,56 +42,60 @@ public class Agent3D : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
+                objectClickedOn = hit.collider.gameObject;
+
                 //Debug.Log("tag = " + hit.collider.tag);
                 if (hit.collider.tag == "Ground")
                 {
-                    agent.SetDestination(hit.point);                    
-                } else
+                    agent.SetDestination(hit.point);
+                }
+                else
                 {
                     if (actionsController.CurrentInteraction == UIActionsController.Interaction.pickUp && hit.collider.tag == "PickUp")
                     {
-                        itemToPickUp = hit.collider.gameObject.GetComponent<PickUp>();
+                        
+                        //itemToPickUp = hit.collider.gameObject.GetComponent<PickUp>();
 
-                        toExecute += ExecutePickUp;                        
+                        toExecute += ExecutePickUp;
                     }
 
-<<<<<<< HEAD
                     if (actionsController.CurrentInteraction == UIActionsController.Interaction.talkTo && hit.collider.tag == "Dialogue")
                     {
                         toExecute += ExecuteTalkTo;
+                    }                    
+
+                    if (actionsController.CurrentInteraction == UIActionsController.Interaction.goTo && hit.collider.tag == "Exit")
+                    {
+                        /*
+                        if (hit.collider.GetComponent<ExitScene>() == null)
+                        {
+                            Debug.Log("ExitScene Component is missing.");
+                            return;
+                        }
+                        hit.collider.GetComponent<ExitScene>().LoadNextScene();
+                        */
+                        toExecute += ExecuteGoTo;
                     }
 
-                    if(toExecute != null)
+                    if (actionsController.CurrentInteraction == UIActionsController.Interaction.lookAt && hit.collider.tag == "Observable")
                     {
-                        GetInInteractionRange(hit.point, toExecute);
+                        toExecute += ExecuteLookAt;
+
+                        //hit.collider.GetComponent<LookAt>().LookAtObject();
+                    }
+
+                    if (actionsController.CurrentInteraction == UIActionsController.Interaction.lookAt && hit.collider.tag == "Cupboard")
+                    {
+                        SceneManager.LoadScene("Tafel");
+                    }
+
+
+                    if (toExecute != null)
+                    {
+                        GetInInteractionrangeAndInteract(hit.point, toExecute);
 
                         actionsController.ResetInteraction();
-                    }                                        
-=======
-                if (actionsController.CurrentInteraction == UIActionsController.Interaction.talkTo && hit.collider.tag == "Dialogue")
-                {
-                    SceneManager.LoadScene("Dialogue");
-                }
-
-                if (actionsController.CurrentInteraction == UIActionsController.Interaction.goTo && hit.collider.tag == "Exit")
-                {
-                    if (hit.collider.GetComponent<ExitScene>() == null)
-                    {
-                        Debug.Log("ExitScene Component is missing.");
-                        return;
                     }
-                    hit.collider.GetComponent<ExitScene>().LoadNextScene();
-                }
-
-                if (actionsController.CurrentInteraction == UIActionsController.Interaction.lookAt && hit.collider.tag == "Observable")
-                {
-                    hit.collider.GetComponent<LookAt>().LookAtObject();
-                }
-
-                if (actionsController.CurrentInteraction == UIActionsController.Interaction.lookAt && hit.collider.tag == "Cupboard")
-                {
-                    SceneManager.LoadScene("Tafel");
->>>>>>> 9b7ff28b015e254c56d42514b79110631a6fd980
                 }
             }
         }
@@ -98,35 +103,45 @@ public class Agent3D : MonoBehaviour
 
     #region Interactions Stuff
 
-    /// <summary>
-    /// Die Action bei der die Methoden angemeldet werden, die je nach Click-Ziel Ausgeführt werden sollen.
-    /// </summary>
     Action toExecute;
 
-    /// <summary>
-    /// Merkt sich das Item, welches aufgehoben wird, nachdem der Raycast der Maus 
-    /// </summary>
-    PickUp itemToPickUp;
+    GameObject objectClickedOn;
 
-    private void ExecutePickUp()
+    void ExecuteGoTo()
     {
-        itemToPickUp.TakeItem();
+        ExitScene exit = objectClickedOn.GetComponent<ExitScene>();
+        if (exit == null)
+        {
+            Debug.Log("ExitScene Component is missing.");
+            return;
+        }
+        exit.LoadNextScene();
+    }
 
-        //Reset
-        actionsController.ResetInteraction();
+    void ExecuteLookAt()
+    {
+        objectClickedOn.GetComponent<LookAt>().LookAtObject();
+        
+        toExecute -= ExecuteLookAt;
+    }
+
+    void ExecutePickUp()
+    {
+        objectClickedOn.GetComponent<PickUp>().TakeItem();
+        //itemToPickUp.TakeItem();        
         toExecute -= ExecutePickUp;
     }
 
-    private void ExecuteTalkTo()
+    void ExecuteTalkTo()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Dialogue");
 
         toExecute -= ExecuteTalkTo;
     }
 
     #endregion
 
-    private void GetInInteractionRange(Vector3 point, Action toExecute)
+    private void GetInInteractionrangeAndInteract(Vector3 point, Action toExecute)
     {
         //Debug.Log("GetInInteractionRange(Vector3 point, Action toExecute)");
 
@@ -141,7 +156,7 @@ public class Agent3D : MonoBehaviour
         float distance = float.MaxValue;
         while (distance > interactionRadius)
         {
-           distance= Vector3.Distance(agent.destination, this.transform.position);
+            distance = Vector3.Distance(agent.destination, this.transform.position);
             yield return null;
         }
         agent.SetDestination(transform.position);
