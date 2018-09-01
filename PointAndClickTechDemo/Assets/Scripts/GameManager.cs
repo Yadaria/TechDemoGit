@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector]
     public static bool graveVisited = false;
+
+
     // Use this for initialization
     void Start()
     {
